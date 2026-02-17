@@ -20,7 +20,7 @@
     }
 </script>
 
-<div class="card shadow-sm h-100">
+<div class="card shadow border-orange border-3 h-100">
     <div class="card-body">
         <h5 class="card-title m-0">{item.nome}</h5>
         <p class="text-secondary mb-2"><small>{displayDate(new Date(item.created_at).toLocaleDateString())}</small></p>

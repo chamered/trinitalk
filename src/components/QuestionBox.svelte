@@ -20,8 +20,8 @@
     };
 </script>
 
-<div class="card border-orange shadow mx-3" style="width: 450px;">
-    <div class="card-header border-orange">
+<div class="card border-orange border-5 shadow mx-3" style="width: 450px;">
+    <div class="card-header border-orange border-5">
         <h2 class="card-title fw-bold d-flex justify-content-center align-items-center gap-1 m-0">
             <Icon icon="bxs:box" width="32" height="32" />
             TriniBox

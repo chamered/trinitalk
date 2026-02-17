@@ -1,7 +1,6 @@
 import { supabase } from '$lib/supabaseClient';
 
 export const load = async () => {
-    
     const { data, error } = await supabase
         .from('domande')
         .select('*')

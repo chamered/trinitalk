@@ -8,8 +8,8 @@
 </svelte:head>
 
 <div class="container py-3">
-    <h2>Tutte le Domande</h2>
-    <p class="text-secondary">Naviga tra tutte le domande fatte dalla nostra community.</p>
+    <h2 class="text-white">Tutte le Domande</h2>
+    <p class="text-light">Naviga tra tutte le domande fatte dalla nostra community.</p>
     
     <div class="row mt-4 g-3 h-100">
         {#each data.domande as item}
