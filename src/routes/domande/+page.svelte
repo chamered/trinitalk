@@ -3,6 +3,9 @@
 
     let { data } = $props();
 </script>
+<svelte:head>
+	<title>Trinibox - Domande</title>
+</svelte:head>
 
 <div class="container py-3">
     <h2>Tutte le Domande</h2>

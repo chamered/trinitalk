@@ -13,7 +13,6 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
-	<title>Trinibox</title>
 </svelte:head>
 
 {@render children()}
