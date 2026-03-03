@@ -12,7 +12,7 @@ export const actions = {
             const { error } = await supabase
                 .from('domande')
                 .insert([
-                    { nome: nome && nome.trim() !== '' ? capitalizeFirstChar(nome) : 'Anonimo', domanda: domanda }
+                    { nome: nome && nome.trim() !== '' ? capitalizeFirstChar(nome) : 'Utente Anonimo', domanda: domanda }
                 ]);
             
             if (error) throw error; 
