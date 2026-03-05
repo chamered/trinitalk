@@ -22,11 +22,11 @@ Currently, the core feature of the site is the **TriniBox**, a dedicated space w
 ## 🗺️ Roadmap (Coming Soon)
 
 As the official website for the podcast, the platform will be expanded with the following features:
-- 👤 **Accounts:** Users will be able to create accounts to save their questions and vote other questions.
-- 🎧 **Episodes Archive:** A dedicated section to listen to past episodes directly on the site.
-- 📝 **Show Notes & Resources:** Detailed notes, links, and Catholic resources mentioned during the episodes.
-- 👥 **Hosts Info:** A page dedicated to the creators behind TriniTalk.
-- 📱 **Enhanced UI/UX:** Continuous improvements to the design and accessibility.
+- [ ] 👤 **Accounts:** Users will be able to create accounts to save their questions and vote other questions.
+- [ ] 🎧 **Episodes Archive:** A dedicated section to listen to past episodes directly on the site.
+- [ ] 📝 **Show Notes & Resources:** Detailed notes, links, and Catholic resources mentioned during the episodes.
+- [ ] 👥 **Hosts Info:** A page dedicated to the creators behind TriniTalk.
+- [ ] 📱 **Enhanced UI/UX:** Continuous improvements to the design and accessibility.
 
 ## 🛠️ Tech Stack
 
