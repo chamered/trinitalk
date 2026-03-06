@@ -1,7 +1,6 @@
 <script>
     import Icon from "@iconify/svelte";
     import QuestionCard from '../../components/QuestionCard.svelte';
-    import UserMenu from "../../components/UserMenu.svelte";
 
     let { data } = $props();
 </script>
@@ -10,8 +9,7 @@
 </svelte:head>
 
 <div class="container py-3">
-    <UserMenu />
-    <div class="d-md-flex justify-content-between align-items-center mb-3 mt-5">
+    <div class="d-md-flex justify-content-between align-items-center mb-3">
         <div>  
             <h2 class="text-white">Tutte le Domande</h2>
             <p class="text-light m-0">Naviga tra tutte le domande fatte dalla nostra community.</p>
