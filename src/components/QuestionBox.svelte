@@ -8,13 +8,18 @@
     const validator = useValidation();
     const auth = useAuth();
     let userName = $state("");
+    let lastUserId = $state(null);
 
     $effect(() => {
         const user = auth.user;
-        if (user?.user_metadata?.name && !userName) {
-            userName = user.user_metadata.name;
-        } else if (!user) {
+        if (user) {
+            if (user.id !== lastUserId) {
+                userName = user.user_metadata?.name ?? "";
+                lastUserId = user.id;
+            }
+        } else {
             userName = "";
+            lastUserId = null;
         }
     });
 </script>
