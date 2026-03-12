@@ -5,6 +5,7 @@
 	import { page } from '$app/stores';
 	import '../app.css';
 	import Navbar from '../components/Navbar.svelte';
+	import Footer from '../components/Footer.svelte';
 	import CookieBanner from '../components/CookieBanner.svelte';	
 			
 	onMount(async () => {
@@ -22,4 +23,7 @@
 	<Navbar />
 {/if}
 {@render children()}
+
+<Footer />
+
 <CookieBanner />
