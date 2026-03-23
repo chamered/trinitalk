@@ -180,3 +180,23 @@ body::before {
 .text-custom-2 {
     color: #ED4503;
 }
+
+.select-custom {
+    color: #FB7185;
+    background-color: #3D0F20;
+    border: 1px solid #9D174D;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23FB7185' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    transition: all 0.3s ease;
+}
+
+.select-custom:hover {
+    border-color: #FB7185;
+}
+
+.select-custom:focus {
+    color: #FB7185;
+    background-color: #3D0F20;
+    border-color: #FB7185;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(251, 113, 133, 0.5);
+}

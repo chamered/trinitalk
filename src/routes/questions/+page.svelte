@@ -21,15 +21,27 @@
     });
 
     let questions = $state(data.questions);
+    let sortBy = $state('likes');
+
+    let sortedQuestions = $derived([...questions].sort((a, b) => {
+        if (sortBy === 'likes') {
+            return b.upvotes.length - a.upvotes.length || new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        } else {
+            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        }
+    }));
 
     // Handle upvoting or removing an upvote from a question
-    async function toggleUpvote(questionIndex, questionId) {
+    async function toggleUpvote(questionId) {
         // Requires authentication to vote
         if (!currentUser) {
             alert("Devi accedere per poter votare una domanda!");
             goto('/login');
             return;
         }
+
+        const questionIndex = questions.findIndex(q => q.id === questionId);
+        if (questionIndex === -1) return;
 
         const question = questions[questionIndex];
         const hasUpvoted = question.upvotes.some(v => v.user_id === currentUser.id);
@@ -60,8 +72,12 @@
             <h2 class="text-white">Tutte le Domande</h2>
             <p class="text-light m-0">Naviga tra tutte le domande fatte dalla nostra community.</p>
         </div>
-        <div>
-            <a class="btn btn-custom d-flex justify-content-center align-items-center gap-1 my-3" href="/">
+        <div class="d-flex flex-column flex-md-row align-items-md-center gap-3 my-3 my-md-0">
+            <select class="form-select select-custom" bind:value={sortBy}>
+                <option value="likes">Più Piaciute</option>
+                <option value="recent">Più Recenti</option>
+            </select>
+            <a class="btn btn-custom d-flex justify-content-center align-items-center gap-1 text-nowrap" href="/">
                 <Icon icon="icon-park-outline:write" width="18" height="18" />
                 Fai una Domanda
             </a>
@@ -69,9 +85,9 @@
     </div>
     
     <div class="row g-3 h-100">
-        {#each questions as item, index}
+        {#each sortedQuestions as item, index}
             <div class="col-12">
-                <QuestionCard {item} {index} {currentUser} onToggleUpvote={() => toggleUpvote(index, item.id)} />
+                <QuestionCard {item} {index} {currentUser} onToggleUpvote={() => toggleUpvote(item.id)} />
             </div>
         {/each}
     </div>
