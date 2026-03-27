@@ -33,7 +33,9 @@
 		{@render children()}
 	</main>
 
-	<Footer />
+	{#if $page.url.pathname !== '/login'}
+		<Footer />
+	{/if}
 </div>
 
 <CookieBanner />
