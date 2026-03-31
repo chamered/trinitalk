@@ -5,7 +5,6 @@ export const load = async () => {
     const { data, error } = await supabase
         .from('questions')
         .select('*, upvotes(user_id)')
-        .is('episode_url', null)
         .order('created_at', { ascending: false });
 
     // If there is an error, return an empty array

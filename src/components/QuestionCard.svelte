@@ -87,13 +87,21 @@
             </div>
         </div>
         <p class="card-text fw-light m-0 mb-3">{item.question}</p>
-        <button 
-            class="btn btn-outline-custom rounded-pill fw-bold d-flex justify-content-center align-items-center gap-1 {isAnimating ? 'animate-pop' : ''}"
-            style="min-width: 60px;"
-            onclick={handleUpvote}>
-            <Icon class="me-1" icon={hasUpvoted ? 'iconamoon:like-fill' : 'iconamoon:like'} width="18" height="18" />
-            {item.upvotes?.length || 0}
-        </button>
+        {#if item.episode_url}
+            <p class="fw-light d-flex align-items-center gap-1 m-0 mb-3">
+                <Icon icon="mdi:play-circle" width="18" height="18" />
+                Trovi la risposta a questa domanda <a class="text-custom text-decoration-none ms-1" href={item.episode_url}>QUI</a>
+            </p>
+        {/if}
+        {#if !item.episode_url}
+            <button 
+                class="btn btn-outline-custom rounded-pill fw-bold d-flex justify-content-center align-items-center gap-1 {isAnimating ? 'animate-pop' : ''}"
+                style="min-width: 60px;"
+                onclick={handleUpvote}>
+                <Icon class="me-1" icon={hasUpvoted ? 'iconamoon:like-fill' : 'iconamoon:like'} width="18" height="18" />
+                {item.upvotes?.length || 0}
+            </button>
+        {/if}
     </div>
 </div>
 
