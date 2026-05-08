@@ -39,7 +39,7 @@
     <div class="card-body text-white">
         <p class="card-text text-center fw-light mb-3">
             Hai dubbi o curiosità sulla religione cattolica?
-            Fai una question e ti risponderemo nel podcast!
+            Fai una domanda e ti risponderemo nel podcast!
         </p>
         <form class:was-validated={validator.isActive} method="POST" use:enhance={validator.serverSubmit} novalidate>
             <div>
