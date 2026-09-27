@@ -8,7 +8,7 @@
             <span class="text-secondary opacity-50">|</span>
             <a href="/cookies" class="text-secondary text-decoration-none"><small>Cookie Policy</small></a>
             <span class="text-secondary opacity-50">|</span>
-            <a href="/terms" class="text-secondary text-decoration-none"><small>Termini di Servizio</small></a>
+            <a href="/terms" class="text-secondary text-decoration-none"><small>Terms of Service</small></a>
         </div>
     </div>
 </footer>

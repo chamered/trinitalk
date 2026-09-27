@@ -13,7 +13,7 @@
 
     let questions = $state(data.questions);
     let sortBy = $state('likes');
-    let activeTab = $state('all');
+    let activeTab = $state('unanswered');
 
     let filteredQuestions = $derived(questions.filter(q => {
         if (activeTab === 'all') return true;
@@ -77,8 +77,8 @@
         <div>  
             <h2 class="text-white">
                 {#if activeTab === 'all'}Tutte le Domande{/if}
-                {#if activeTab === 'answered'}Domande Risposte{/if}
-                {#if activeTab === 'unanswered'}Domande Non Risposte{/if}
+                {#if activeTab === 'answered'}Risposte{/if}
+                {#if activeTab === 'unanswered'}Domande{/if}
             </h2>
             <p class="text-light m-0">Naviga tra tutte le domande fatte dalla nostra community.</p>
         </div>
@@ -97,13 +97,13 @@
 
     <ul class="nav nav-underline mb-2">
         <li class="nav-item">
-            <button class="nav-link {activeTab === 'all' ? 'active' : ''}" type="button" onclick={() => activeTab = 'all'}>Tutte</button>
+            <button class="nav-link {activeTab === 'unanswered' ? 'active' : ''}" type="button" onclick={() => activeTab = 'unanswered'}>Domande</button>
         </li>
         <li class="nav-item">
             <button class="nav-link {activeTab === 'answered' ? 'active' : ''}" type="button" onclick={() => activeTab = 'answered'}>Risposte</button>
         </li>
         <li class="nav-item">
-            <button class="nav-link {activeTab === 'unanswered' ? 'active' : ''}" type="button" onclick={() => activeTab = 'unanswered'}>Non Risposte</button>
+            <button class="nav-link {activeTab === 'all' ? 'active' : ''}" type="button" onclick={() => activeTab = 'all'}>Tutte</button>
         </li>
     </ul>
     
