@@ -3,14 +3,18 @@
     import { enhance } from "$app/forms";
     import { useValidation, getAuth } from "../lib/utils.svelte.js";
 
+    // Risultato della form action: { success, message }
     let { form } = $props();
 
     const validator = useValidation();
     const auth = getAuth();
-    
+
     // State variables for pre-filling the user's name
     let userName = $state("");
     let lastUserId = $state(null);
+
+    // Riferimento alla textarea, per poterla svuotare dopo l'invio
+    let questionField = $state(null);
 
     // Watch for authentication changes and automatically fill the name input
     // if a user logs in, or clear it if they log out
@@ -28,9 +32,16 @@
             lastUserId = null;
         }
     });
+
+    // Svuota la domanda appena inviata, così l'utente può ripeterne l'invio
+    $effect(() => {
+        if (form?.success && questionField) {
+            questionField.value = "";
+        }
+    });
 </script>
 
-<div class="card border-custom bg-custom border-2 shadow-lg mx-3" style="width: 450px;">
+<div class="card border-custom bg-custom border-2 shadow-lg mx-3 w-100" style="max-width: 450px;">
     <div class="card-header border-custom-2 border-4">
         <h2 class="card-title text-white d-flex justify-content-center m-0">
             Trini<span class="text-custom">Box</span>
@@ -41,6 +52,17 @@
             Hai dubbi o curiosità sulla religione cattolica?
             Fai una domanda e ti risponderemo nel podcast!
         </p>
+
+        {#if form?.message}
+            <div
+                class="alert {form.success ? 'alert-success' : 'alert-danger'} p-2 gap-1 text-center d-flex justify-content-center align-items-center mt-0 mb-3"
+                role="alert"
+            >
+                <Icon icon={form.success ? 'mingcute:check-circle-fill' : 'mingcute:alert-fill'} width="20" height="20" />
+                {form.message}
+            </div>
+        {/if}
+
         <form class:was-validated={validator.isActive} method="POST" use:enhance={validator.serverSubmit} novalidate>
             <div>
                 <label for="name" class="mb-1">Nome <small class="fw-lighter fst-italic"> (Opzionale)</small></label>
@@ -48,7 +70,7 @@
             </div>
             <div class="my-3">
                 <label for="question" class="mb-1">Domanda</label>
-                <textarea name="question" class="form-control input" rows="3" placeholder="Scrivi qui la tua domanda..." required></textarea>
+                <textarea bind:this={questionField} name="question" class="form-control input" rows="3" placeholder="Scrivi qui la tua domanda..." required></textarea>
                 <div class="invalid-feedback">
                     Bro, la domanda...
                 </div>

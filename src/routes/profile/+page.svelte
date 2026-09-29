@@ -3,15 +3,24 @@
     import { goto } from '$app/navigation';
     import Icon from '@iconify/svelte';
     import logo from "$lib/assets/trinitalk-word-logo.png";
+    import { useValidation } from "$lib/utils.svelte.js";
 
     // Variabili di stato
+    const validator = useValidation();
+
     let user = $state(null);
-    let username = $state('');
+    let name = $state('');
     let email = $state('');
     let password = $state(''); // La lasciamo vuota di default
-    
+
     let isLoading = $state(false);
     let message = $state({ type: '', text: '' }); // Per mostrare successi o errori
+
+    // Legge il nome di-display con fallback sul vecchio campo 'username',
+    // usato dai profili registrati prima della correzione.
+    function displayNameOf(targetUser) {
+        return targetUser?.user_metadata?.name || targetUser?.user_metadata?.username || '';
+    }
 
     // Al caricamento, controlliamo se l'utente è loggato
     $effect(() => {
@@ -22,7 +31,7 @@
             } else {
                 user = data.session.user;
                 // Pre-compiliamo i campi con i dati attuali
-                username = user.user_metadata?.username || '';
+                name = displayNameOf(user);
                 email = user.email || '';
             }
         });
@@ -35,8 +44,8 @@
         let updates = {};
 
         // Aggiunto un controllo più sicuro per evitare che "undefined" crei problemi
-        if (username !== (user.user_metadata?.username || '')) {
-            updates.data = { username: username }; 
+        if (name !== displayNameOf(user)) {
+            updates.data = { name: name };
         }
         if (email !== user.email) {
             updates.email = email;
@@ -57,15 +66,17 @@
         if (error) {
             message = { type: 'error', text: "Errore durante l'aggiornamento: " + error.message };
         } else {
-            // IL TRUCCO MAGICO: Forziamo il browser a scaricare i dati freschi!
-            await supabase.auth.refreshSession();
-            
+            // Forziamo il browser a scaricare i dati freschi, altrimenti
+            // user_metadata continuerebbe a contenere il vecchio nome.
+            const { data: sessionData } = await supabase.auth.refreshSession();
+            const updatedUser = data.user || sessionData?.session?.user;
+
             message = { type: 'success', text: 'Profilo aggiornato con successo!' };
-            password = ''; 
-            user = data.user; 
-            
+            password = '';
+            user = updatedUser;
+
             // Riapplichiamo il nome per essere sicuri al 100% che l'input si aggiorni
-            username = user.user_metadata?.username || ''; 
+            name = displayNameOf(user);
         }
 
         isLoading = false;
@@ -96,20 +107,32 @@
             </div>
         {/if}
 
-        <form onsubmit={(e) => { e.preventDefault(); handleUpdate(); }} class="text-white" novalidate>
+        <form
+            onsubmit={(e) => { e.preventDefault(); if (validator.clientSubmit(e.target)) handleUpdate(); }}
+            oninput={() => validator.reset()}
+            class="text-white"
+            class:was-validated={validator.isActive}
+            novalidate
+        >
             <div class="row gy-2">
                 <div class="col-12">
-                    <label for="username" class="form-label m-0 mb-1">Nome</label>
-                    <input type="text" id="username" class="form-control login-input" bind:value={username} placeholder="Il tuo nome"/>
+                    <label for="name" class="form-label m-0 mb-1">Nome</label>
+                    <input type="text" id="name" class="form-control login-input" bind:value={name} placeholder="Il tuo nome"/>
                 </div>
                 <div class="col-12">
                     <label for="email" class="form-label m-0 mb-1">Email</label>
                     <input type="email" id="email" class="form-control login-input" bind:value={email} required placeholder="tua@email.com"/>
+                    <div class="invalid-feedback">
+                        Perfavore inserisci un'email valida.
+                    </div>
                 </div>
                 <div class="col-12">
                     <label for="password" class="form-label m-0 mb-1">Password</label>
-                    <input type="password" id="password" class="form-control login-input" bind:value={password} placeholder="Lascia vuoto per non modificare"/>
-                    <div class="form-text text-white-50 mt-1" style="font-size: 0.85rem;">Lascia il campo vuoto se vuoi mantenere la password attuale.</div>
+                    <input type="password" id="password" class="form-control login-input" bind:value={password} minlength="8" placeholder="Lascia vuoto per non modificare"/>
+                    <div class="invalid-feedback">
+                        La password deve essere di almeno 8 caratteri.
+                    </div>
+                    <div class="form-text text-white-50 mt-1" style="font-size: 0.85rem;">Lascia il campo vuoto se vuoi mantenere la password attuale. Minimo 8 caratteri.</div>
                 </div>
                 <div class="col-12 mt-3">
                     <button type="submit" class="btn btn-custom w-100" disabled={isLoading}>

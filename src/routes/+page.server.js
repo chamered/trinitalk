@@ -1,4 +1,4 @@
-import { supabase } from '$lib/supabaseClient.js';
+import { supabase } from '$lib/supabaseClient';
 
 /**
  * SvelteKit Server Actions for the root page.
@@ -34,7 +34,7 @@ export const actions = {
             if (error) throw error; 
 
             // Return success state to the client
-            return { success: true, message: 'question salvata!' };
+            return { success: true, message: 'Domanda inviata! Grazie, la leggeremo nel podcast.' };
         } catch (error) {
             // Log any unexpected errors and return failure state
             console.error(error);
@@ -46,16 +46,12 @@ export const actions = {
 /**
  * Capitalizes the first character of every word in the given string.
  * @param {string} string - The input string to capitalize.
- * @returns {string} - The capitalized string (note: currently adds a trailing space).
+ * @returns {string} - The capitalized string, with normalized whitespace.
  */
 function capitalizeFirstChar(string) {
-    const STRINGS = string.split(" ");
-    let result = "";
-
-    STRINGS.forEach(element => {
-        const firstChar = element.charAt(0).toUpperCase();
-        result += firstChar + element.slice(1) + " ";
-    });
-
-    return result;
+    return string
+        .trim()
+        .split(/\s+/)
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
 }

@@ -1,5 +1,5 @@
 <svelte:head>
-	<title>Terms of Service - TriniTalk</title>
+	<title>TriniTalk - Termini di Servizio</title>
 </svelte:head>
 
 <div class="container py-4 text-light" style="max-width: 800px;">

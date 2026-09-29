@@ -1,7 +1,8 @@
 <script>
     import Icon from "@iconify/svelte";
+    import ProfileIcon from "./ProfileIcon.svelte";
     import { supabase } from "$lib/supabaseClient.js";
-    import { setupProfileIcon, getAuth } from "../lib/utils.svelte.js";
+    import { getAuth } from "../lib/utils.svelte.js";
     
     let { onclick } = $props();
 
@@ -22,15 +23,23 @@
     <span class="text-white text-nowrap">Ciao, {name}</span>
     <div class="dropdown">
         <div
-            class="rounded-circle d-flex justify-content-center align-items-center text-white"
-            style="width: 45px; height: 45px; background-color: #007bff; cursor: pointer;"
+            class="p-0 border-0 bg-transparent d-flex align-items-center"
+            style="cursor: pointer;"
             role="button"
             data-bs-toggle="dropdown"
             aria-expanded="false"
+            title={name}
         >
-            <span class="fw-bold">{setupProfileIcon(name)}</span>
+            <ProfileIcon name={name}/>
         </div>
         <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+                <a class="dropdown-item d-flex align-items-center" href="/profile" onclick={onclick}>
+                    <Icon icon="mingcute:user-3-line" class="me-1" width="20" height="20" />
+                    Profilo
+                </a>
+            </li>
+            <li><hr class="dropdown-divider" /></li>
             <li>
                 <a class="dropdown-item text-danger d-flex align-items-center" href="/login" onclick={handleLogout}>
                     <Icon icon="material-symbols:logout-rounded" class="me-1" width="20" height="20" />

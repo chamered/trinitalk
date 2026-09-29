@@ -14,6 +14,10 @@
     let questions = $state(data.questions);
     let sortBy = $state('likes');
     let activeTab = $state('unanswered');
+    let voteError = $state('');
+
+    // In-flight requests, per evitare doppi submit su una domanda già votata
+    let pendingVotes = $state([]);
 
     let filteredQuestions = $derived(questions.filter(q => {
         if (activeTab === 'all') return true;
@@ -46,26 +50,47 @@
             return;
         }
 
+        // Ignora i secondi click mentre la richiesta è ancora in volo
+        if (pendingVotes.includes(questionId)) return;
+
         const questionIndex = questions.findIndex(q => q.id === questionId);
         if (questionIndex === -1) return;
 
         const question = questions[questionIndex];
         const hasUpvoted = question.upvotes.some(v => v.user_id === currentUser.id);
 
-        if(hasUpvoted) {
+        // Snapshot per ripristinare lo stato se il database rifiuta l'operazione
+        const previousUpvotes = [...question.upvotes];
+
+        pendingVotes = [...pendingVotes, questionId];
+        voteError = '';
+
+        if (hasUpvoted) {
             // Remove upvote optimistically for instant UI feedback, then delete from database
             questions[questionIndex].upvotes = question.upvotes.filter(v => v.user_id !== currentUser.id);
-            
-            await supabase.from('upvotes')
+
+            const { error } = await supabase.from('upvotes')
                 .delete()
                 .match({ question_id: questionId, user_id: currentUser.id });
+
+            if (error) {
+                questions[questionIndex].upvotes = previousUpvotes;
+                voteError = 'Non è stato possibile annullare il tuo voto. Riprova.';
+            }
         } else {
             // Add upvote optimistically for instant UI feedback, then insert into database
-            questions[questionIndex].upvotes.push({ user_id: currentUser.id });
+            questions[questionIndex].upvotes = [...question.upvotes, { user_id: currentUser.id }];
 
-            await supabase.from('upvotes')
+            const { error } = await supabase.from('upvotes')
                 .insert({ question_id: questionId, user_id: currentUser.id });
+
+            if (error) {
+                questions[questionIndex].upvotes = previousUpvotes;
+                voteError = 'Non è stato possibile registrare il tuo voto. Riprova.';
+            }
         }
+
+        pendingVotes = pendingVotes.filter(id => id !== questionId);
     }
 </script>
 <svelte:head>
@@ -95,6 +120,18 @@
         </div>
     </div>
 
+    {#if voteError}
+        <div class="alert alert-danger d-flex justify-content-between align-items-center gap-2 p-2 mt-0" role="alert">
+            <span class="d-flex align-items-center gap-1">
+                <Icon icon="mingcute:alert-fill" width="20" height="20" />
+                {voteError}
+            </span>
+            <button type="button" class="btn btn-sm btn-outline-light border-0 p-1" aria-label="Chiudi avviso" onclick={() => voteError = ''}>
+                <Icon icon="mingcute:close-line" width="18" height="18" />
+            </button>
+        </div>
+    {/if}
+
     <ul class="nav nav-underline mb-2">
         <li class="nav-item">
             <button class="nav-link {activeTab === 'unanswered' ? 'active' : ''}" type="button" onclick={() => activeTab = 'unanswered'}>Domande</button>
@@ -108,9 +145,14 @@
     </ul>
     
     <div class="row g-3 h-100">
-        {#each sortedQuestions as item, index}
+        {#each sortedQuestions as item}
             <div class="col-12">
-                <QuestionCard {item} {index} {currentUser} onToggleUpvote={() => toggleUpvote(item.id)} />
+                <QuestionCard
+                    {item}
+                    {currentUser}
+                    isPending={pendingVotes.includes(item.id)}
+                    onToggleUpvote={() => toggleUpvote(item.id)}
+                />
             </div>
         {/each}
     </div>

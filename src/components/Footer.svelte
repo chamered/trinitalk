@@ -4,11 +4,11 @@
             <small>&copy; 2026 TriniTalk Podcast. Tutti i diritti riservati.</small>
         </p>
         <div class="d-flex justify-content-center gap-3">
-            <a href="/privacy" class="text-secondary text-decoration-none"><small>Privacy Policy</small></a>
+            <a href="/privacy" class="text-secondary text-decoration-none"><small>Privacy</small></a>
             <span class="text-secondary opacity-50">|</span>
-            <a href="/cookies" class="text-secondary text-decoration-none"><small>Cookie Policy</small></a>
+            <a href="/cookies" class="text-secondary text-decoration-none"><small>Cookie</small></a>
             <span class="text-secondary opacity-50">|</span>
-            <a href="/terms" class="text-secondary text-decoration-none"><small>Terms of Service</small></a>
+            <a href="/terms" class="text-secondary text-decoration-none"><small>Termini di Servizio</small></a>
         </div>
     </div>
 </footer>

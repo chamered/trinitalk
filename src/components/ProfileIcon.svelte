@@ -1,22 +1,17 @@
 <script>
-    import { setupProfileIcon } from "../lib/utils.svelte.js";
+    import { setupProfileIcon, profileIconColor } from "../lib/utils.svelte.js";
     let { name } = $props();
 
-    function randomBgColor() {
-        // Generate a random hue (0 to 360)
-        const h = Math.floor(Math.random() * 360);
-        // Set saturation between 60% and 90% for vibrant colors
-        const s = Math.floor(Math.random() * 30) + 60;
-        // Set lightness between 40% and 60% to ensure readability of white text
-        const l = Math.floor(Math.random() * 20) + 40;
-
-        return `hsl(${h}, ${s}%, ${l}%)`;
-    }
+    // Colour derived from the name, so it stays the same across visits
+    let bgColor = $derived(profileIconColor(name));
 </script>
 
 <div
-    class="rounded-circle d-flex justify-content-center align-items-center text-white shadow-sm"
-    style="width: 45px; height: 45px; background-color: {randomBgColor()};"
+    class="rounded-circle d-flex justify-content-center align-items-center text-white shadow-sm flex-shrink-0"
+    style="width: 45px; height: 45px; background-color: {bgColor};"
+    title={name}
+    role="img"
+    aria-label={name}
 >
     <span class="fw-bold">{setupProfileIcon(name)}</span>
 </div>

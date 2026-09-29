@@ -2,14 +2,28 @@
     import Icon from "@iconify/svelte";
     import ProfileIcon from "./ProfileIcon.svelte";
 
-    let { item, index, currentUser, onToggleUpvote } = $props();
+    let { item, currentUser, isPending = false, onToggleUpvote } = $props();
 
     // Determine if the current user has upvoted this specific question
     let hasUpvoted = $derived(currentUser && item.upvotes?.some((v: any) => v.user_id === currentUser.id));
 
     let isAnimating = $state(false);
 
+    // Reference time for relative dates, refreshed every minute so the
+    // timestamps don't go stale while the page stays open.
+    let now = $state(new Date());
+
+    $effect(() => {
+        const interval = setInterval(() => {
+            now = new Date();
+        }, 60_000);
+
+        return () => clearInterval(interval);
+    });
+
     function handleUpvote() {
+        if (isPending) return;
+
         onToggleUpvote();
         isAnimating = true;
         setTimeout(() => {
@@ -33,14 +47,15 @@
      * date string for older questions.
      * 
      * @param {string | number | Date} date - The creation date of the question.
+     * @param {Date} reference - The moment to compare against, so the value
+     *                            re-evaluates when the timer ticks.
      * @returns {string} The formatted relative or absolute date string.
      */
-    function formatDate(date: string | number | Date): string {
+    function formatDate(date: string | number | Date, reference: Date): string {
         const creationDate = new Date(date);
-        const now = new Date();
 
         const diffSeconds = Math.floor(
-            (now.getTime() - creationDate.getTime()) / 1_000
+            (reference.getTime() - creationDate.getTime()) / 1_000
         );
         if (diffSeconds < 60) return "Pochi secondi fa";
 
@@ -83,7 +98,9 @@
             <ProfileIcon name={item.name}/>
             <div class="d-flex flex-column">
                 <h6 class="card-title m-0">{item.name}</h6>
-                <small class="text-secondary">{formatDate(item.created_at)}</small>
+                <small class="text-secondary" title={new Date(item.created_at).toLocaleString('it-IT')}>
+                    {formatDate(item.created_at, now)}
+                </small>
             </div>
         </div>
         <p class="card-text fw-light m-0 mb-3 text-break">{item.question}</p>
@@ -99,6 +116,9 @@
             <button 
                 class="btn btn-outline-custom rounded-pill fw-bold d-flex justify-content-center align-items-center gap-1 {isAnimating ? 'animate-pop' : ''}"
                 style="min-width: 60px;"
+                aria-pressed={hasUpvoted}
+                aria-label="Mi piace questa domanda"
+                disabled={isPending}
                 onclick={handleUpvote}>
                 <Icon class="me-1" icon={hasUpvoted ? 'iconamoon:like-fill' : 'iconamoon:like'} width="18" height="18" />
                 {item.upvotes?.length || 0}

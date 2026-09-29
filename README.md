@@ -17,7 +17,9 @@ Currently, the core feature of the site is the **TriniBox**, a dedicated space w
 - **Real-time Storage:** Questions are instantly saved to a **Supabase** (PostgreSQL) database.
 - **Public Feed:** A dedicated page to view all previously asked questions from the community.
 - **Accounts:** Users can create an account and log in to interact with questions.
+- **User Profile:** Logged-in users can update their name, email and password from the `/profile` page.
 - **Voting & Sorting:** Logged-in users can upvote questions. The public feed supports sorting by "Most Liked" and "Most Recent".
+- **Answered Questions:** A question counts as answered once an `episode_url` is set on it, which links back to the episode that covered it.
 - **Modern Tech:** Built with the latest **Svelte 5 (Runes)** syntax and **SvelteKit**.
 - **Responsive Design:** Styled with Bootstrap 5 featuring a custom "Orange" theme to match the podcast's branding.
 
@@ -72,6 +74,7 @@ Then, create the following tables in your Supabase project:
 | `created_at` | `timestamptz`| Default: `now()`                         |
 | `name`       | `text`       | The user's name ("Utente Anonimo" as default)   |
 | `question`   | `text`       | The question content                     |
+| `episode_url`| `text`       | Nullable. Link to the episode that answers this question. Set manually from the Supabase dashboard when the episode is published. A `NULL` value marks the question as still unanswered. |
 
 **Table: `upvotes`**
 | Column Name   | Type         | Description                              |
@@ -80,6 +83,13 @@ Then, create the following tables in your Supabase project:
 | `created_at`  | `timestamptz`| Default: `now()`                         |
 | `question_id` | `int8`       | Foreign Key to `questions.id`            |
 | `user_id`     | `uuid`       | Foreign Key to `auth.users.id`           |
+
+**Recommended constraint:** enforce one upvote per user per question at the database level, so the "single vote" rule doesn't depend on UI behaviour alone.
+```sql
+ALTER TABLE upvotes ADD CONSTRAINT upvotes_unique_user_question UNIQUE (question_id, user_id);
+```
+
+**Row-Level Security:** the app writes to the database with the public anon key, so all write access is governed by the RLS policies you configure in the Supabase dashboard. The app expects anonymous `INSERT` on `questions`, public `SELECT` on both tables, and authenticated `INSERT`/`DELETE` on `upvotes` scoped to the caller's `auth.uid()`.
 
 ### 5. Run the development server
 ```bash

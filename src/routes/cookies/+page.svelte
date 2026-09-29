@@ -1,5 +1,5 @@
 <svelte:head>
-	<title>Cookie Policy - TriniTalk</title>
+	<title>TriniTalk - Cookie Policy</title>
 </svelte:head>
 
 <div class="container py-4 text-light" style="max-width: 800px;">

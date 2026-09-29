@@ -79,7 +79,13 @@
             </div>
         {/if}
 
-        <form onsubmit={handleSubmit} class:was-validated={validator.isActive} class="text-white" novalidate>
+        <form
+            onsubmit={handleSubmit}
+            oninput={() => validator.reset()}
+            class:was-validated={validator.isActive}
+            class="text-white"
+            novalidate
+        >
             <div class="row gy-2">
                 {#if !isLogin}
                 <div class="col-12">
